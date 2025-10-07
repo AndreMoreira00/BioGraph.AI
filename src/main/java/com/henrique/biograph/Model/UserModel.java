@@ -1,7 +1,18 @@
 package com.henrique.biograph.Model;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.henrique.biograph.Enums.UserRoleEnum;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,7 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class UserModel {
+public class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,6 +38,10 @@ public class UserModel {
 
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role;
 
     public UserModel() {
     }
@@ -69,6 +84,27 @@ public class UserModel {
 
     public void setEmailVerified(Boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public UserRoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(UserRoleEnum role) {
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == UserRoleEnum.ROLE_ADMIN)
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
 }
