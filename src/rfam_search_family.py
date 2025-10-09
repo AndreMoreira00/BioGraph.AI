@@ -1,4 +1,6 @@
 import pandas as pd
+import requests 
+import os
 
 data_path = "./data/Rfam/Rfam.pdb"
 
