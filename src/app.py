@@ -22,7 +22,7 @@ def infernal_route():
       return jsonify({"error": str(e)}), 500
 
 @app.route('/get_molecules_by_rfam', methods=['GET'])
-def rfam_search_family_route():
+def get_molecules_by_rfam():
   data = request.json
   rfam_acc = data.get('rfam_acc')
 
@@ -35,6 +35,20 @@ def rfam_search_family_route():
   except Exception as e:
       return jsonify({"error": str(e)}), 500
 
+@app.route('/get_data_by_rfam_and_chain', methods=['GET'])
+def get_data_by_rfam_and_chain():
+  data = request.json
+  rfam_acc = data.get('rfam_acc')
+  chain = data.get('chain')
+
+  if not rfam_acc:
+      return jsonify({"error": "Familia não fornecida"}), 400
+
+  try:
+      results = rfam_search_family.get_data_by_rfam_and_chain(rfam_acc, chain)
+      return jsonify(results), 200
+  except Exception as e:
+      return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
