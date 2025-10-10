@@ -43,6 +43,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/analyze").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/get_molecules_by_rfam/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/get_data_by_rfam_and_chain/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

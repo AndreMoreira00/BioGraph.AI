@@ -5,7 +5,7 @@ public class FamilyPredictionDTO {
     private double bit_score;
     private double e_value;
     private String rfam_acc;
-    private String target_name;
+    private String target_name;    
 
     public FamilyPredictionDTO() {
     }
