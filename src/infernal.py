@@ -13,7 +13,7 @@ def Infernal(sequence: str) -> list:
 
       command = [
           'cmscan',
-          '--noali', # Otimização de velocidade
+          '--noali',
           '--tblout', tblout_file.name,
           rfam_db_path,
           '-'
@@ -50,8 +50,10 @@ def Infernal(sequence: str) -> list:
               'bit_score': float(parts[14]),
               'bias': float(parts[13])      
           }
-          hits.append(hit_data)
-  
+
+          if hit_data['bit_score'] >= 60.0:
+              hits.append(hit_data)
+              
   hits.sort(key=lambda x: x['e_value'])
   return hits
 
