@@ -53,14 +53,14 @@ def get_data_by_rfam_and_chain():
 def get_structure_by_chain_pdb_id_start_and_end():
   chain = request.args.get('chain')
   pdb_id = request.args.get('pdb_id')
-  pdb_start = request.args.get('pdb_start')
-  pdb_end = request.args.get('pdb_end')
+  pdb_start = int(request.args.get('pdb_start'))
+  pdb_end = int(request.args.get('pdb_end'))
 
   if not pdb_id or not pdb_start or not pdb_end or not chain:
       return jsonify({"error": "Parâmetros insuficientes"}), 400
 
   try:
-      structure = biograpth_api.get_structure_by_chain_pdb_id_start_end(chain=chain,pdb_id=pdb_id,pdb_start=pdb_start,pdb_end=pdb_end)
+      structure = biograpth_api.get_structure_by_chain_pdb_id_start_end(chain_id=chain,pdb_id=pdb_id,pdb_start=pdb_start,pdb_end=pdb_end)
       return jsonify(structure), 200
   except Exception as e:
       return jsonify({"error": str(e)}), 500
