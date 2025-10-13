@@ -6,8 +6,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.henrique.biograph.DTOs.FamilyPredictionDTO;
 import com.henrique.biograph.DTOs.InfernalRequestDTO;
-import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChain;
-import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfam;
+import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChainDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfamDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetStructureByChainAndPdbDTO.ResponseToGetStructureByChainAndPdbDTO;
 import com.henrique.biograph.Service.PredictionService;
 
 @Service
@@ -32,7 +33,7 @@ public class PredictionServiceImpl implements PredictionService {
     }
 
     @Override
-    public ResponseToGetMoleculesByRfam[] getMoleculesByFamily(String rfam) {
+    public ResponseToGetMoleculesByRfamDTO[] getMoleculesByFamily(String rfam) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -40,12 +41,12 @@ public class PredictionServiceImpl implements PredictionService {
                         .queryParam("rfam_acc", rfam)
                         .build())
                 .retrieve()
-                .bodyToMono(ResponseToGetMoleculesByRfam[].class)
+                .bodyToMono(ResponseToGetMoleculesByRfamDTO[].class)
                 .block();
     }
 
     @Override
-    public ResponseToGetDataByRfamAndChain getDataByRfamAndChain(String rfam, String chain) {
+    public ResponseToGetDataByRfamAndChainDTO getDataByRfamAndChain(String rfam, String chain) {
         return webClient
             .get()
             .uri(uriBuilder -> uriBuilder
@@ -54,8 +55,25 @@ public class PredictionServiceImpl implements PredictionService {
                     .queryParam("chain", chain)
                     .build())
             .retrieve()
-            .bodyToMono(ResponseToGetDataByRfamAndChain.class)
+            .bodyToMono(ResponseToGetDataByRfamAndChainDTO.class)
             .block();
+    }
+
+    @Override
+    public ResponseToGetStructureByChainAndPdbDTO getStructureByChainAndPdb(String chain, String pdbId,
+            Integer pdbStart, Integer pdbEnd) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/get_structure_by_chain_pdb_id_start_end")
+                        .queryParam("chain", chain)
+                        .queryParam("pdb_id", pdbId)
+                        .queryParam("pdb_start", pdbStart)
+                        .queryParam("pdb_end", pdbEnd)
+                        .build())
+                .retrieve()
+                .bodyToMono(ResponseToGetStructureByChainAndPdbDTO.class)
+                .block();
     }
 
 }

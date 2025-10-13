@@ -2,14 +2,17 @@ package com.henrique.biograph.Service;
 
 import com.henrique.biograph.DTOs.FamilyPredictionDTO;
 import com.henrique.biograph.DTOs.InfernalRequestDTO;
-import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChain;
-import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfam;
+import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChainDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfamDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetStructureByChainAndPdbDTO.ResponseToGetStructureByChainAndPdbDTO;
 
 public interface PredictionService {
     
     FamilyPredictionDTO[] analyzeSequence(InfernalRequestDTO sequence);
 
-    ResponseToGetMoleculesByRfam[] getMoleculesByFamily(String rfam);
+    ResponseToGetMoleculesByRfamDTO[] getMoleculesByFamily(String rfam);
 
-    ResponseToGetDataByRfamAndChain getDataByRfamAndChain(String rfam, String chain);
+    ResponseToGetDataByRfamAndChainDTO getDataByRfamAndChain(String rfam, String chain);
+
+    ResponseToGetStructureByChainAndPdbDTO getStructureByChainAndPdb(String chain, String pdbId, Integer pdbStart, Integer pdbEnd);
 }

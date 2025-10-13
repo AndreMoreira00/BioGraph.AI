@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.henrique.biograph.DTOs.FamilyPredictionDTO;
 import com.henrique.biograph.DTOs.InfernalRequestDTO;
-import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChain;
-import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfam;
+import com.henrique.biograph.DTOs.Response.ResponseToGetDataByRfamAndChainDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetMoleculesByRfamDTO;
+import com.henrique.biograph.DTOs.Response.ResponseToGetStructureByChainAndPdbDTO.ResponseToGetStructureByChainAndPdbDTO;
 // import com.henrique.biograph.DTOs.Response.ResponseToAnalyzeSequenceFromUserInDotBrecket;
 import com.henrique.biograph.Service.PredictionService;
 
@@ -37,13 +38,18 @@ public class SequenceController {
     }
 
     @GetMapping("/get_molecules_by_rfam/{id}")
-    public ResponseToGetMoleculesByRfam[] getMoleculesByFamily(@PathVariable("id") String rfam) {
+    public ResponseToGetMoleculesByRfamDTO[] getMoleculesByFamily(@PathVariable("id") String rfam) {
         return predictionService.getMoleculesByFamily(rfam);
     }
 
     @GetMapping("/get_data_by_rfam_and_chain/{rfam}/{chain}")
-    public ResponseToGetDataByRfamAndChain getDataByRfamAndChain(@PathVariable String rfam, @PathVariable String chain) {
+    public ResponseToGetDataByRfamAndChainDTO getDataByRfamAndChain(@PathVariable String rfam, @PathVariable String chain) {
         return predictionService.getDataByRfamAndChain(rfam, chain);
+    }
+
+    @GetMapping("/get_structure_by_chain_pdb_id_start_end/{chain}/{pdbId}/{pdbStart}/{pdbEnd}")
+    public ResponseToGetStructureByChainAndPdbDTO getStructureByChainAndPdb(@PathVariable String chain, @PathVariable String pdbId, @PathVariable Integer pdbStart, @PathVariable Integer pdbEnd) {
+        return predictionService.getStructureByChainAndPdb(chain, pdbId, pdbStart, pdbEnd);
     }
 
 
