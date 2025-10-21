@@ -1,11 +1,14 @@
 package com.henrique.biograph.Controller;
 
 import java.net.URI;
+import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +29,7 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    @Autowired
+    // @Autowired
     public UserController(UserService userService, AuthenticationManager authenticationManager,
             TokenService tokenService) {
         this.userService = userService;
@@ -55,5 +58,16 @@ public class UserController {
 
         return ResponseEntity.ok(new ResponseToLoginUserDTO(token));
 
+    }
+
+    @GetMapping(value = "/auth/verificarCadastro/{uuid}")
+    public ResponseEntity<String> verificarCadastro(@PathVariable("uuid") UUID uuid) {
+        String resposta = userService.verificarToken(uuid);
+        
+        if (resposta.equals("Email verificado com sucesso") || resposta.equals("Email já verificado")) {
+            return ResponseEntity.ok(resposta);
+        } else {
+            return ResponseEntity.badRequest().body(resposta);
+        }
     }
 }

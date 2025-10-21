@@ -1,6 +1,6 @@
 package com.henrique.biograph.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,17 +20,10 @@ public class SequenceController {
 
     private final PredictionService predictionService;
 
-    @Autowired
+    // @Autowired
     public SequenceController(PredictionService predictionService) {
         this.predictionService = predictionService;
     }
-
-    // @PostMapping("/analyze_sequence_all")
-    // public ResponseToAnalyzeSequenceFromUserInDotBrecket(@RequestBody InfernalRequestDTO sequence) {
-    //     FamilyPredictionDTO[] familyPredictionDTOs = analyzeSequence(sequence);
-    //     ChainDTO[] moleculeSelected = getMoleculesByFamily(familyPredictionDTOs[]);
-    //     return null;
-    // }
 
     @PostMapping("/analyze")
     public FamilyPredictionDTO[] analyzeSequence(@RequestBody InfernalRequestDTO sequence) {
