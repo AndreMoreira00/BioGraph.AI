@@ -47,6 +47,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/get_data_by_rfam_and_chain/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/get_structure_by_chain_pdb_id_start_end/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/verificarCadastro/{uuid}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/resendRegistration/{email}").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

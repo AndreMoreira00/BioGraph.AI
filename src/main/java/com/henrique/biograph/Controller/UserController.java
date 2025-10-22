@@ -63,11 +63,28 @@ public class UserController {
     @GetMapping(value = "/auth/verificarCadastro/{uuid}")
     public ResponseEntity<String> verificarCadastro(@PathVariable("uuid") UUID uuid) {
         String resposta = userService.verificarToken(uuid);
-        
+
         if (resposta.equals("Email verificado com sucesso") || resposta.equals("Email já verificado")) {
             return ResponseEntity.ok(resposta);
         } else {
             return ResponseEntity.badRequest().body(resposta);
         }
     }
+
+// Em UserController.java
+
+@GetMapping("/auth/resendRegistration/{email}")
+public ResponseEntity<String> resendRegistration(@PathVariable("email") String email) {
+    
+    UserModel userModel = userService.getUserByEmail(email); 
+
+    if (Boolean.TRUE.equals(userModel.getEmailVerified())) {
+        return ResponseEntity.badRequest().body("Este email já foi verificado.");
+    }
+
+    userService.createAndSendVerificationLink(userModel); 
+
+    return ResponseEntity.ok("Novo email de verificação enviado para " + email);
+}
+
 }

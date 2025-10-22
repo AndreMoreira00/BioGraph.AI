@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
     private final UserVerificationRepository userVerificationRepository;
 
     // @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, EmailService emailService, UserVerificationRepository userVerificationRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, EmailService emailService,
+            UserVerificationRepository userVerificationRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.emailService = emailService;
@@ -48,14 +49,28 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userModel);
 
-        UserVerifyModel verification_tokens = new UserVerifyModel(userModel,
-                Instant.now().plus(15, ChronoUnit.MINUTES));
-
-        userVerificationRepository.save(verification_tokens);
-
-        emailService.enviarEmailDeVerificacao(userModel, verification_tokens.getToken().toString());
+        createAndSendVerificationLink(userModel);
 
         return registerToDTO(data, userModel.getId(), userModel.getEmailVerified(), userModel.getRole());
+    }
+
+    // Em UserServiceImpl.java
+
+    @Override
+    public UUID createAndSendVerificationLink(UserModel userModel) {
+
+        userVerificationRepository.findByUsuario(userModel).ifPresent(oldToken -> {
+            userVerificationRepository.delete(oldToken);
+        });
+
+        UserVerifyModel verification_tokens = new UserVerifyModel(userModel,
+                Instant.now().plus(15, ChronoUnit.MINUTES)); //
+
+        userVerificationRepository.save(verification_tokens); //
+
+        emailService.enviarEmailDeVerificacao(userModel, verification_tokens.getToken().toString()); 
+
+        return verification_tokens.getToken();
     }
 
     @Override
@@ -79,8 +94,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String verificarToken(UUID token) {
         var verification = userVerificationRepository.findById(token).orElse(null);
-        if (verification == null) return "Token não encontrado";
-        
+        if (verification == null)
+            return "Token não encontrado";
+
         if (verification.getDataExpiracao().isBefore(Instant.now())) {
             userVerificationRepository.deleteById(token);
             return "Token expirado";
@@ -96,6 +112,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         userVerificationRepository.deleteById(token);
         return "Email verificado com sucesso";
+    }
+
+    @Override
+    public UserModel getUserByEmail(String email) {
+        UserModel userModel = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email Não Encontrado!"));
+        return userModel;
     }
 
 }
